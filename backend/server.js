@@ -3,17 +3,18 @@ const cors = require("cors");
 const multer = require("multer");
 
 const app = express();
-app.use(cors());  // Allows frontend to communicate with backend
-app.use(express.json());  // Parses JSON data from requests
+app.use(cors());
+app.use(express.json());
 
-// Configure Multer for file uploads (stores files in "uploads" folder)
+// Configure Multer for file uploads (store in "uploads" folder)
 const upload = multer({ dest: "uploads/" });
 
-// Endpoint to upload files
 app.post("/upload", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
   res.json({ message: "File uploaded successfully!", file: req.file });
 });
 
-// Start server on port 5000
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
